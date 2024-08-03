@@ -5,7 +5,8 @@ import { COLORS, GAP, SQUARE_SIZE } from "./const";
 import clamp from "lodash.clamp";
 
 export default function Squares({ x, y, stageWidth }: { x: number; y: number; stageWidth: number }) {
-  const refs = COLORS.map((_) => useRef<Konva.Rect>(null));
+  const refs = [useRef<Konva.Rect>(null), useRef<Konva.Rect>(null), useRef<Konva.Rect>(null), useRef<Konva.Rect>(null)];
+  console.assert(COLORS.length == refs.length);
   const animatingTo = useRef<Record<string, number | null>>({});
 
   const xs = COLORS.map((_, i) => x + GAP * (i + 1) + SQUARE_SIZE * i);
