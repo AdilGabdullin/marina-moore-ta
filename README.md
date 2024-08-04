@@ -2,6 +2,6 @@
 
 ## React-Konva + TypeScript + Vite
 
-The key idea for high performance is to use `useRef` instead of `useState`
+https://adil-upwork.web.app/marina-moore-ta/video.webm
 
-https://www.awesomescreenshot.com/video/30170926?key=50ff6ab476a32fd47d6d6721e3242b53
+The key idea for high performance is to use `useRef` instead of `useState`
