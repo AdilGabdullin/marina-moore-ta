@@ -5,30 +5,32 @@ import { COLORS, GAP, SQUARE_SIZE } from "./const";
 import clamp from "lodash.clamp";
 
 export default function Squares({ x, y, maxX }: { x: number; y: number; maxX: number }) {
-  const refs: React.RefObject<Konva.Rect>[] = COLORS.map(() => useRef(null)); // eslint-disable-line
+  const refs = COLORS.map(() => useRef<Konva.Rect>(null)); // eslint-disable-line
   const destinations = useRef<Record<string, number | null>>({});
+  const xs = COLORS.map((_, i) => x + (GAP + SQUARE_SIZE) * i);
 
-  const xs = COLORS.map((_, i) => x + GAP * (i + 1) + SQUARE_SIZE * i);
+  const animate = (square: Konva.Rect, destination: number, onFinish: VoidFunction) =>
+    new Konva.Tween({
+      node: square,
+      x: destination,
+      duration: Math.abs(square.x() - destination) / 600,
+      onFinish,
+    }).play();
 
-  const animate = (square: Konva.Rect, destination: number) => {
+  const animateOnce = (square: Konva.Rect, destination: number) => {
     const id = square.id();
     const curr = destinations.current;
     if (curr[id] != destination) {
       curr[id] = destination;
-      new Konva.Tween({
-        node: square,
-        x: destination,
-        duration: Math.abs(square.x() - destination) / 600,
-        onFinish: () => (curr[id] = null),
-      }).play();
+      animate(square, destination, () => (curr[id] = null));
     }
   };
 
-  const squares = (ignoredId?: string) =>
+  const squares = (targetId?: string) =>
     refs
       .map((ref) => ref.current)
       .filter((square) => square != null)
-      .filter((square) => square.id() != ignoredId)
+      .filter((square) => square.id() != targetId)
       .sort((s1, s2) => s1.x() - s2.x());
 
   const handleDragMove = (e: Konva.KonvaEventObject<DragEvent>) => {
@@ -36,20 +38,15 @@ export default function Squares({ x, y, maxX }: { x: number; y: number; maxX: nu
     const targetDestination = closestNumber(target.x(), xs);
     const otherDestinations = xs.filter((x) => x != targetDestination);
     squares(target.id()).forEach((square, i) => {
-      animate(square, otherDestinations[i]);
+      animateOnce(square, otherDestinations[i]);
     });
   };
 
   const handleDragEnd = () => {
     squares().forEach((square, i) => {
-      animate(square, xs[i]);
+      animateOnce(square, xs[i]);
     });
   };
-
-  const dragBoundFunc = (pos: { x: number; y: number }) => ({
-    x: clamp(pos.x, 0, maxX),
-    y: y + GAP,
-  });
 
   return (
     <>
@@ -59,14 +56,14 @@ export default function Squares({ x, y, maxX }: { x: number; y: number; maxX: nu
           id={color}
           ref={refs[i]}
           x={xs[i]}
-          y={y + GAP}
+          y={y}
           fill={color}
           width={SQUARE_SIZE}
           height={SQUARE_SIZE}
           draggable={true}
           onDragEnd={handleDragEnd}
           onDragMove={handleDragMove}
-          dragBoundFunc={dragBoundFunc}
+          dragBoundFunc={({ x }) => ({ x: clamp(x, 0, maxX), y })}
         />
       ))}
     </>
@@ -74,6 +71,6 @@ export default function Squares({ x, y, maxX }: { x: number; y: number; maxX: nu
 }
 
 function closestNumber(n: number, values: number[]) {
-  const d = (x: number) => Math.abs(x - n);
-  return values.reduce((a, b) => (d(b) < d(a) ? b : a), values[0]);
+  const dist = (x: number) => Math.abs(x - n);
+  return values.reduce((a, b) => (dist(b) < dist(a) ? b : a), values[0]);
 }

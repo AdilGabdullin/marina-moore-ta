@@ -14,7 +14,7 @@ export default function App() {
     <Stage {...size}>
       <Layer>
         <Rect x={x} y={y} width={width} height={height} stroke="#030303" strokeWidth={4} />
-        <Squares x={x} y={y} maxX={size.width - SQUARE_SIZE} />
+        <Squares x={x + GAP} y={y + GAP} maxX={size.width - SQUARE_SIZE} />
       </Layer>
     </Stage>
   );
