@@ -2,8 +2,6 @@
 
 ## React-Konva + TypeScript + Vite
 
-<video width="600" height="400" controls>
-  <source src="https://adil-upwork.web.app/marina-moore-ta/video.webm" type="video/webm">
-</video>
+[video.webm](https://github.com/user-attachments/assets/94461be6-fa07-4dc8-b37a-1b92182469cb)
 
-The key idea of high performance is to use `useRef` instead of `useState`
+The key idea of high performance is to avoid rerender by using the `useRef` hook instead of `useState`
