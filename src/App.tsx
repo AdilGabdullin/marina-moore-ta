@@ -6,14 +6,14 @@ import { useLayoutEffect, useState } from "react";
 export default function App() {
   const size = useFullScreen();
   const width = SQUARE_SIZE * COLORS.length + GAP * (COLORS.length + 1);
-  const height = SQUARE_SIZE + GAP * (COLORS.length - 2);
+  const height = SQUARE_SIZE + GAP * 2;
   const x = Math.round((size.width - width) / 2);
   const y = Math.round((size.height - height) / 2);
 
   return (
     <Stage {...size}>
       <Layer>
-        <Rect x={x} y={y} width={width} height={height} stroke="#030303" strokeWidth={4} />
+        <Rect x={x} y={y} width={width} height={height} stroke="#4c3d52" strokeWidth={4} />
         <Squares x={x + GAP} y={y + GAP} maxX={size.width - SQUARE_SIZE} />
       </Layer>
     </Stage>

@@ -33,6 +33,14 @@ export default function Squares({ x, y, maxX }: { x: number; y: number; maxX: nu
       .filter((square) => square.id() != targetId)
       .sort((s1, s2) => s1.x() - s2.x());
 
+  const handleDragStart = (e: Konva.KonvaEventObject<DragEvent>) => {
+    const target = e.target;
+    const id = target.id();
+    destinations.current[id] = null;
+    squares(target.id()).forEach((square, i) => square.zIndex(i + 1));
+    target.zIndex(COLORS.length);
+  };
+
   const handleDragMove = (e: Konva.KonvaEventObject<DragEvent>) => {
     const target = e.target;
     const targetDestination = closestNumber(target.x(), xs);
@@ -61,6 +69,7 @@ export default function Squares({ x, y, maxX }: { x: number; y: number; maxX: nu
           width={SQUARE_SIZE}
           height={SQUARE_SIZE}
           draggable={true}
+          onDragStart={handleDragStart}
           onDragEnd={handleDragEnd}
           onDragMove={handleDragMove}
           dragBoundFunc={({ x }) => ({ x: clamp(x, 0, maxX), y })}
